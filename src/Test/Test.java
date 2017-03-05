@@ -1,7 +1,7 @@
 package Test;
 
-import com.java.tempgui.components.AnimatedCartoonButton;
-import com.java.tempgui.components.AnimatedCartoonTextField;
+import com.bb166.tempgui.components.AnimatedCartoonButton;
+import com.bb166.tempgui.components.AnimatedCartoonTextField;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;

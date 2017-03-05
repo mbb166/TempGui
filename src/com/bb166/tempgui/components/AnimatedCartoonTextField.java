@@ -1,4 +1,4 @@
-package com.java.tempgui.components;
+package com.bb166.tempgui.components;
 
 import javafx.scene.shape.Line;
 
