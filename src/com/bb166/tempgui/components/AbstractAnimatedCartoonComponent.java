@@ -5,6 +5,8 @@ import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+
 import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
@@ -12,6 +14,7 @@ import java.util.Random;
 abstract class AbstractAnimatedCartoonComponent {
     private Rectangle button;
     private StackPane stackPane;
+    private CartoonComponentGroup cartoonComponentGroup = null;
 
     private Random random;
 
@@ -72,7 +75,8 @@ abstract class AbstractAnimatedCartoonComponent {
     protected AbstractAnimatedCartoonComponent(int x, int y){
         random = new Random();
         stackPane = new StackPane();
-        button = new Rectangle(x,y);
+        button = new Rectangle();
+        button.setFill(Color.web("#333333",1d));
 
         new AnimationTimer() {
             @Override
@@ -99,10 +103,12 @@ abstract class AbstractAnimatedCartoonComponent {
 
     public void setWidth(int width){
         button.setWidth(width);
+        stackPane.setMaxWidth(width);
     }
 
     public void setHeight(int height){
         button.setHeight(height);
+        stackPane.setMaxHeight(height);
     }
 
     public void setX(int x){
@@ -143,5 +149,9 @@ abstract class AbstractAnimatedCartoonComponent {
 
     public Pane getPane(){
         return stackPane;
+    }
+
+    public void setCartoonComponentGroup(CartoonComponentGroup cartoonComponentGroup){
+        this.cartoonComponentGroup = cartoonComponentGroup;
     }
 }

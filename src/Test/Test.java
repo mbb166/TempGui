@@ -5,6 +5,8 @@ import com.bb166.tempgui.components.AnimatedCartoonTextField;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 /**
@@ -18,10 +20,11 @@ public class Test extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+
         AnimatedCartoonButton animatedCartoonButton = new AnimatedCartoonButton(60,10);
         AnimatedCartoonTextField animatedCartoonTextField = new AnimatedCartoonTextField(100,100,100,30);
         Group group = new Group();
-        animatedCartoonButton.setLabel("Start");
+        animatedCartoonButton.setLabel("Tak to juz jest");
         group.getChildren().add(animatedCartoonButton.getPane());
         group.getChildren().add(animatedCartoonTextField.getPane());
         Scene scene = new Scene(group);
