@@ -27,8 +27,6 @@ public class AnimatedCartoonButton extends AbstractAnimatedCartoonComponent {
 
         label.setOnMouseEntered(event -> super.startExpensionAnimation());
         label.setOnMouseExited(event -> super.startDecreasingAnimation());
-        label.setX(x);
-        label.setY(y);
 
         super
                 .getPane()

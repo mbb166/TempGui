@@ -14,7 +14,6 @@ import java.util.Random;
 abstract class AbstractAnimatedCartoonComponent {
     private Rectangle button;
     private StackPane stackPane;
-    private CartoonComponentGroup cartoonComponentGroup = null;
 
     private Random random;
 
@@ -149,9 +148,5 @@ abstract class AbstractAnimatedCartoonComponent {
 
     public Pane getPane(){
         return stackPane;
-    }
-
-    public void setCartoonComponentGroup(CartoonComponentGroup cartoonComponentGroup){
-        this.cartoonComponentGroup = cartoonComponentGroup;
     }
 }
