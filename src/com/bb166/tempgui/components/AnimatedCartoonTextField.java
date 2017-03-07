@@ -6,13 +6,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
-public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
+public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
     private Line cursor;
     private float cursorOpacity = 1f;
     private boolean cursorAnimationStart = false;
     private boolean disappearance = true;
     private int refresh = 50;
-    private CartoonComponentGroup cartoonComponentGroup = null;
+    private boolean focused = false;
 
     private Runnable cursorAnimation = () -> {
         while (cursorAnimationStart) {
@@ -38,20 +38,24 @@ public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
     };
 
     private EventHandler<? super MouseEvent> focusedEvent = ev -> {
-        super.startExpensionAnimation();
-        if (!cursorAnimationStart) {
-            cursor.setVisible(true);
-            cursorAnimationStart = true;
-            new Thread(cursorAnimation).start();
+        if (!focused) {
+            super.getCartoonComponentGroup().focusedTextComponent(this);
+            focused = true;
+            super.startExpensionAnimation();
+            if (!cursorAnimationStart) {
+                cursor.setVisible(true);
+                cursorAnimationStart = true;
+                new Thread(cursorAnimation).start();
+            }
         }
     };
 
-    public AnimatedCartoonTextField(int x, int y, int width, int heigth) {
-        super(x, y);
+    public AnimatedCartoonTextField(CartoonComponentGroup cartoonComponentGroup,int x, int y, int width, int heigth) {
+        super(cartoonComponentGroup,x, y);
         super.setWidth(width);
         super.setHeight(heigth);
         cursor = new Line(x, y, x, y + 23);
-        cursor.setTranslateX(-super.getPane().getLayoutX() / 2 + 5);
+        cursor.setTranslateX(-width / 2 + 5);
         cursor.setStroke(Color.web("#1E1E1E"));
         cursor.setVisible(false);
         super.getPane().getChildren().add(cursor);
@@ -67,7 +71,17 @@ public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
         }.start();
     }
 
-    public void setCartoonComponentGroup(CartoonComponentGroup cartoonComponentGroup) {
-        this.cartoonComponentGroup = cartoonComponentGroup;
+    public void startDecreasingAnimation(){
+        super.startDecreasingAnimation();
+        cursorOpacity = 1f;
+        cursorAnimationStart = false;
+        disappearance = true;
+        cursor.setVisible(false);
+        focused = false;
+    }
+
+    public void startExpensionAnimation() {
+        super.startExpensionAnimation();
+        focused = true;
     }
 }

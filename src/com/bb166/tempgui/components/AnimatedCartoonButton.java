@@ -3,18 +3,25 @@ package com.bb166.tempgui.components;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class AnimatedCartoonButton extends AbstractAnimatedCartoonComponent {
+import java.util.Random;
+
+public final class AnimatedCartoonButton extends AbstractAnimatedCartoonComponent {
+    private Color[] colors = {
+            Color.web("#F71B1B"), Color.web("#2EE61A"), Color.web("#1A57E6"), Color.web("#E5E520"), Color.web("#E59020")
+    };
+
     private Text label;
 
     private int verticalSpace = 16;
     private int horizontalSpace = 40;
 
-    public AnimatedCartoonButton(int x, int y) {
-        super(x, y);
+    public AnimatedCartoonButton(CartoonComponentGroup cartoonComponentGroup, int x, int y) {
+        super(cartoonComponentGroup, x, y);
         label = new Text("Button");
         label.setFill(Paint.valueOf("WHITE"));
         label.setFont(new Font("Arial Black", 20));
@@ -33,6 +40,8 @@ public class AnimatedCartoonButton extends AbstractAnimatedCartoonComponent {
                 .getChildren()
                 .add(label);
 
+        super.getButton().setFill(
+                colors[new Random().nextInt(colors.length-1)]);
     }
 
     public String getLabel() {
@@ -48,17 +57,27 @@ public class AnimatedCartoonButton extends AbstractAnimatedCartoonComponent {
     }
 
     public void setOnMousePressed(EventHandler<? super MouseEvent> ev) {
-        super.setOnMousePressed(ev);
-        label.setOnMousePressed(ev);
+        EventHandler<? super MouseEvent> unFocusedAction = this.addUnfocusedTextFieldAction(ev);
+        super.setOnMousePressed(unFocusedAction);
+        label.setOnMousePressed(unFocusedAction);
     }
 
     public void setOnMouseReleased(EventHandler<? super MouseEvent> ev) {
-        super.setOnMouseReleased(ev);
-        label.setOnMouseReleased(ev);
+        EventHandler<? super MouseEvent> unFocusedAction = this.addUnfocusedTextFieldAction(ev);
+        super.setOnMouseReleased(unFocusedAction);
+        label.setOnMouseReleased(unFocusedAction);
     }
 
     public void setOnMouseClicked(EventHandler<? super MouseEvent> ev) {
-        super.setOnMouseClicked(ev);
-        label.setOnMouseClicked(ev);
+        EventHandler<? super MouseEvent> unFocusedAction = this.addUnfocusedTextFieldAction(ev);
+        super.setOnMouseClicked(unFocusedAction);
+        label.setOnMouseClicked(unFocusedAction);
+    }
+
+    private EventHandler<? super MouseEvent> addUnfocusedTextFieldAction(EventHandler<? super MouseEvent> action) {
+        return event -> {
+            action.handle(event);
+            super.getCartoonComponentGroup().focusedAnotherComponent();
+        };
     }
 }

@@ -26,6 +26,8 @@ abstract class AbstractAnimatedCartoonComponent {
     private int refresh = 5;
     private int refreshIncrement = 1;
 
+    private CartoonComponentGroup cartoonComponentGroup = null;
+
     private volatile boolean anmationStart = false;
     private volatile boolean increment = true;
 
@@ -71,7 +73,8 @@ abstract class AbstractAnimatedCartoonComponent {
         }
     }
 
-    protected AbstractAnimatedCartoonComponent(int x, int y){
+    protected AbstractAnimatedCartoonComponent(CartoonComponentGroup cartoonComponentGroup,int x, int y){
+        this.cartoonComponentGroup = cartoonComponentGroup;
         random = new Random();
         stackPane = new StackPane();
         button = new Rectangle();
@@ -88,13 +91,15 @@ abstract class AbstractAnimatedCartoonComponent {
         stackPane.setLayoutX(x);
         stackPane.setLayoutY(y);
         stackPane.getChildren().add(button);
+
+        cartoonComponentGroup.add(this);
     }
 
-    public void startExpensionAnimation(){
+    public void startExpensionAnimation() {
         increment = true;
-        if (!anmationStart){
-            maxXScale = xScale + (random.nextInt(5)+5) / 100d;
-            maxYScale = yScale + (random.nextInt(5)+5) / 100d;
+        if (!anmationStart) {
+            maxXScale = xScale + (random.nextInt(5) + 5) / 100d;
+            maxYScale = yScale + (random.nextInt(5) + 5) / 100d;
             anmationStart = true;
             new Thread(this::animation).start();
         }
@@ -148,5 +153,13 @@ abstract class AbstractAnimatedCartoonComponent {
 
     public Pane getPane(){
         return stackPane;
+    }
+
+    protected CartoonComponentGroup getCartoonComponentGroup(){
+        return cartoonComponentGroup;
+    }
+
+    protected Rectangle getButton() {
+        return button;
     }
 }

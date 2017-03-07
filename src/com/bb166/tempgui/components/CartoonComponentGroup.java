@@ -5,22 +5,34 @@ import javafx.scene.Group;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CartoonComponentGroup extends Group {
-    Set<AbstractAnimatedCartoonComponent> textComponents;
+public final class CartoonComponentGroup{
+    private Group group;
+    private Set<AnimatedCartoonTextField> textComponents;
 
     public CartoonComponentGroup(){
         textComponents = new HashSet<>();
+        group = new Group();
     }
 
     public void add(AbstractAnimatedCartoonComponent abstractAnimatedCartoonComponent){
-        super.getChildren().add(abstractAnimatedCartoonComponent.getPane());
-        textComponents.add(abstractAnimatedCartoonComponent);
+        group.getChildren().add(abstractAnimatedCartoonComponent.getPane());
+
+        if (abstractAnimatedCartoonComponent instanceof AnimatedCartoonTextField)
+            textComponents.add((AnimatedCartoonTextField) abstractAnimatedCartoonComponent);
     }
 
-    public void focusedTextComponent(AnimatedCartoonTextField animatedCartoonTextField) {
+    public void focusedTextComponent(AbstractAnimatedCartoonComponent animatedCartoonTextField) {
         textComponents.forEach(element -> {
             if (!element.equals(animatedCartoonTextField))
-                animatedCartoonTextField.startDecreasingAnimation();
+                element.startDecreasingAnimation();
         });
+    }
+
+    public void focusedAnotherComponent(){
+        textComponents.forEach(AnimatedCartoonTextField::startDecreasingAnimation);
+    }
+
+    public Group getGroup(){
+        return group;
     }
 }
