@@ -95,7 +95,7 @@ abstract class AbstractAnimatedCartoonComponent {
         cartoonComponentGroup.add(this);
     }
 
-    public void startExpensionAnimation() {
+    void startExpensionAnimation() {
         increment = true;
         if (!anmationStart) {
             maxXScale = xScale + (random.nextInt(5) + 5) / 100d;
@@ -123,7 +123,7 @@ abstract class AbstractAnimatedCartoonComponent {
         button.setY(y);
     }
 
-    public void startDecreasingAnimation(){
+    void startDecreasingAnimation(){
         increment = false;
         if (!anmationStart){
             anmationStart = true;
@@ -151,7 +151,7 @@ abstract class AbstractAnimatedCartoonComponent {
         button.setOnMouseExited(ev);
     }
 
-    public Pane getPane(){
+    Pane getPane(){
         return stackPane;
     }
 

@@ -2,9 +2,15 @@ package com.bb166.tempgui.components;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
     private Line cursor;
@@ -13,6 +19,9 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
     private boolean disappearance = true;
     private int refresh = 50;
     private boolean focused = false;
+
+    private StringBuilder text;
+    private Text textControl;
 
     private Runnable cursorAnimation = () -> {
         while (cursorAnimationStart) {
@@ -58,10 +67,19 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         cursor.setTranslateX(-width / 2 + 5);
         cursor.setStroke(Color.web("#1E1E1E"));
         cursor.setVisible(false);
+
+        text = new StringBuilder();
+        textControl = new Text(text.toString());
+        textControl.setTranslateX(-width / 2);
+        textControl.setFill(Paint.valueOf("White"));
+        textControl.setFont(new Font("Arial Black", 20));
+
+        super.getPane().getChildren().add(textControl);
         super.getPane().getChildren().add(cursor);
 
         super.setOnMouseClicked(focusedEvent);
         cursor.setOnMouseClicked(focusedEvent);
+        textControl.setOnMouseClicked(focusedEvent);
 
         new AnimationTimer() {
             @Override
@@ -71,7 +89,26 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         }.start();
     }
 
-    public void startDecreasingAnimation(){
+    void addCharacterToLabel(KeyEvent event) {
+        if ((event.getCode().isLetterKey() || event.getCode().isDigitKey()) &&
+                textControl.getLayoutBounds().getWidth() + 20 < super.getButton().getWidth()) {
+
+            text.append(event.getText());
+            textControl.setText(text.toString());
+            cursor.setTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
+            textControl.setTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
+
+        } else if (event.getCode() == KeyCode.BACK_SPACE && text.length() != 0) {
+
+            text.deleteCharAt(text.length() - 1);
+            textControl.setText(text.toString());
+            cursor.setTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
+            textControl.setTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
+
+        }
+    }
+
+    void startDecreasingAnimation(){
         super.startDecreasingAnimation();
         cursorOpacity = 1f;
         cursorAnimationStart = false;
@@ -80,8 +117,12 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         focused = false;
     }
 
-    public void startExpensionAnimation() {
+    void startExpensionAnimation() {
         super.startExpensionAnimation();
         focused = true;
+    }
+
+    boolean isFocused() {
+        return focused;
     }
 }

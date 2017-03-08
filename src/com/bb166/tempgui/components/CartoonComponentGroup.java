@@ -1,6 +1,7 @@
 package com.bb166.tempgui.components;
 
 import javafx.scene.Group;
+import javafx.scene.input.KeyEvent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,25 +15,31 @@ public final class CartoonComponentGroup{
         group = new Group();
     }
 
-    public void add(AbstractAnimatedCartoonComponent abstractAnimatedCartoonComponent){
+    void add(AbstractAnimatedCartoonComponent abstractAnimatedCartoonComponent){
         group.getChildren().add(abstractAnimatedCartoonComponent.getPane());
 
         if (abstractAnimatedCartoonComponent instanceof AnimatedCartoonTextField)
             textComponents.add((AnimatedCartoonTextField) abstractAnimatedCartoonComponent);
     }
 
-    public void focusedTextComponent(AbstractAnimatedCartoonComponent animatedCartoonTextField) {
+    void focusedTextComponent(AbstractAnimatedCartoonComponent animatedCartoonTextField) {
         textComponents.forEach(element -> {
             if (!element.equals(animatedCartoonTextField))
                 element.startDecreasingAnimation();
         });
     }
 
-    public void focusedAnotherComponent(){
+    void focusedAnotherComponent(){
         textComponents.forEach(AnimatedCartoonTextField::startDecreasingAnimation);
     }
 
-    public Group getGroup(){
+    Group getGroup(){
         return group;
+    }
+
+    void setKeyEvent(KeyEvent event) {
+        textComponents.stream()
+                .filter(AnimatedCartoonTextField::isFocused)
+                .forEach(element -> element.addCharacterToLabel(event));
     }
 }
