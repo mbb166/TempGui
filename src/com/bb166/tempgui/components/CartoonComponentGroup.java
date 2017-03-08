@@ -22,6 +22,10 @@ public final class CartoonComponentGroup{
             textComponents.add((AnimatedCartoonTextField) abstractAnimatedCartoonComponent);
     }
 
+    void add(CartoonLoadingAnimation cartoonLoadingAnimation){
+        group.getChildren().add(cartoonLoadingAnimation.getGroup());
+    }
+
     void focusedTextComponent(AbstractAnimatedCartoonComponent animatedCartoonTextField) {
         textComponents.forEach(element -> {
             if (!element.equals(animatedCartoonTextField))

@@ -3,17 +3,12 @@ package com.bb166.tempgui.components;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
+
 import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.util.Random;
-
 public final class AnimatedCartoonButton extends AbstractAnimatedCartoonComponent {
-    private Color[] colors = {
-            Color.web("#F71B1B"), Color.web("#2EE61A"), Color.web("#1A57E6"), Color.web("#E5E520"), Color.web("#E59020")
-    };
 
     private Text label;
 
@@ -40,8 +35,7 @@ public final class AnimatedCartoonButton extends AbstractAnimatedCartoonComponen
                 .getChildren()
                 .add(label);
 
-        super.getButton().setFill(
-                colors[new Random().nextInt(colors.length-1)]);
+        super.getButton().setFill(Color.randomizeColor());
     }
 
     public String getLabel() {
