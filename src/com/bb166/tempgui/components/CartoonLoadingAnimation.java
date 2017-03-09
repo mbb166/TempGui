@@ -4,13 +4,15 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.shape.*;
 
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 public class CartoonLoadingAnimation {
     private Rectangle first;
     private Rectangle second;
     private Rectangle third;
     private Rectangle fourth;
-
-    private boolean animationStart = false;
 
     private float opacity = 1f;
     private boolean appearance = true;
@@ -22,40 +24,38 @@ public class CartoonLoadingAnimation {
 
     private Group group;
 
-    private Runnable runnable = () -> {
-        while (animationStart) {
-            if (appearance) {
-                opacity += 0.05f;
-                if (opacity >= 0.95f) {
-                    opacity = 1f;
-                    appearance = false;
-                }
-            } else {
-                opacity -= 0.05f;
-                if (opacity <= 0.05f) {
-                    opacity = 0f;
-                    appearance = true;
-                    if (firstVisible) {
-                        secondVisible = true;
-                        firstVisible = false;
-                    } else if (secondVisible) {
-                        secondVisible = false;
-                        thirdVisible = true;
-                    } else if (thirdVisible) {
-                        thirdVisible = false;
-                        fourthVisible = true;
-                    } else if (fourthVisible) {
-                        fourthVisible = false;
-                        firstVisible = true;
-                    }
-                }
-            }
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+    private AnimationTimer animationTimer;
+    private ScheduledExecutorService scheduledExecutorService;
+    private ScheduledFuture<?> scheduledFuture;
 
+    private int refresh = 5;
+
+    private Runnable runnable = () -> {
+        if (appearance) {
+            opacity += 0.03f;
+            if (opacity >= 0.97f) {
+                opacity = 1f;
+                appearance = false;
+            }
+        } else {
+            opacity -= 0.03f;
+            if (opacity <= 0.03f) {
+                opacity = 0f;
+                appearance = true;
+                if (firstVisible) {
+                    secondVisible = true;
+                    firstVisible = false;
+                } else if (secondVisible) {
+                    secondVisible = false;
+                    thirdVisible = true;
+                } else if (thirdVisible) {
+                    thirdVisible = false;
+                    fourthVisible = true;
+                } else if (fourthVisible) {
+                    fourthVisible = false;
+                    firstVisible = true;
+                }
+            }
         }
     };
 
@@ -66,9 +66,11 @@ public class CartoonLoadingAnimation {
         this.group.maxWidth(55);
         this.group.maxHeight(55);
 
+        this.scheduledExecutorService  = group.getScheduledExecutorService();
+
         Color.ColorsNotRepeat colors = Color.getColorsNotRepeat();
 
-        new AnimationTimer() {
+        animationTimer = new AnimationTimer() {
             public void handle(long event){
                 first.setOpacity(opacity);
                 second.setOpacity(opacity);
@@ -80,10 +82,7 @@ public class CartoonLoadingAnimation {
                 third.setVisible(thirdVisible);
                 fourth.setVisible(fourthVisible);
             }
-        }.start();
-
-        animationStart=true;
-        new Thread(runnable).start();
+        };
 
         first = new Rectangle();
         first.setWidth(5);
@@ -114,7 +113,34 @@ public class CartoonLoadingAnimation {
         this.group.getChildren().add(third);
         this.group.getChildren().add(fourth);
 
+        first.setVisible(false);
+        second.setVisible(false);
+        third.setVisible(false);
+        fourth.setVisible(false);
+
         group.add(this);
+    }
+
+    public void start(){
+        animationTimer.start();
+        scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(
+                runnable,
+                refresh,
+                refresh,
+                TimeUnit.MILLISECONDS);
+
+    }
+
+    public void stop(){
+        animationTimer.stop();
+        scheduledFuture.cancel(false);
+        firstVisible = true;
+        secondVisible = false;
+        thirdVisible = false;
+        fourthVisible = false;
+
+        opacity = 1f;
+        appearance = true;
     }
 
     Group getGroup() {

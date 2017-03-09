@@ -2,7 +2,6 @@ package com.bb166.tempgui.components;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
-import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -12,36 +11,34 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+
 public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
     private Line cursor;
     private float cursorOpacity = 1f;
-    private boolean cursorAnimationStart = false;
     private boolean disappearance = true;
     private int refresh = 50;
     private boolean focused = false;
+
+    private AnimationTimer animationTimer;
+    private ScheduledFuture<?> scheduledFuture;
 
     private StringBuilder text;
     private Text textControl;
 
     private Runnable cursorAnimation = () -> {
-        while (cursorAnimationStart) {
-            if (disappearance) {
-                cursorOpacity -= 0.05f;
-                if (cursorOpacity < 0.05f) {
-                    cursorOpacity = 0f;
-                    disappearance = false;
-                }
-            } else {
-                cursorOpacity += 0.05f;
-                if (cursorOpacity > 0.95f) {
-                    cursorOpacity = 1f;
-                    disappearance = true;
-                }
+        if (disappearance) {
+            cursorOpacity -= 0.05f;
+            if (cursorOpacity < 0.05f) {
+                cursorOpacity = 0f;
+                disappearance = false;
             }
-            try {
-                Thread.sleep(refresh);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+        } else {
+            cursorOpacity += 0.05f;
+            if (cursorOpacity > 0.95f) {
+                cursorOpacity = 1f;
+                disappearance = true;
             }
         }
     };
@@ -51,10 +48,14 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
             super.getCartoonComponentGroup().focusedTextComponent(this);
             focused = true;
             super.startExpensionAnimation();
-            if (!cursorAnimationStart) {
+            if (scheduledFuture == null || scheduledFuture.isCancelled()) {
                 cursor.setVisible(true);
-                cursorAnimationStart = true;
-                new Thread(cursorAnimation).start();
+                animationTimer.start();
+                scheduledFuture = super.getScheduledExecutorService().scheduleAtFixedRate(
+                        cursorAnimation,
+                        refresh,
+                        refresh,
+                        TimeUnit.MILLISECONDS);
             }
         }
     };
@@ -81,12 +82,12 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         cursor.setOnMouseClicked(focusedEvent);
         textControl.setOnMouseClicked(focusedEvent);
 
-        new AnimationTimer() {
+        animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 cursor.setOpacity(cursorOpacity);
             }
-        }.start();
+        };
     }
 
     void addCharacterToLabel(KeyEvent event) {
@@ -111,7 +112,10 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
     void startDecreasingAnimation(){
         super.startDecreasingAnimation();
         cursorOpacity = 1f;
-        cursorAnimationStart = false;
+
+        if (scheduledFuture != null)
+            scheduledFuture.cancel(false);
+
         disappearance = true;
         cursor.setVisible(false);
         focused = false;

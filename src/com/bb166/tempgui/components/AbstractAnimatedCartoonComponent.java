@@ -6,17 +6,19 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-
 import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
-abstract class AbstractAnimatedCartoonComponent{
+abstract class AbstractAnimatedCartoonComponent {
     private Rectangle button;
     private StackPane stackPane;
 
     private ScheduledExecutorService scheduledExecutorService;
+    private AnimationTimer animationTimer;
 
     private Random random;
 
@@ -31,65 +33,61 @@ abstract class AbstractAnimatedCartoonComponent{
 
     private CartoonComponentGroup cartoonComponentGroup = null;
 
-    private volatile boolean anmationStart = false;
+    private ScheduledFuture<?> scheduledFuture;
     private volatile boolean increment = true;
 
     private void animation() {
-        while (anmationStart) {
-            if (increment) {
-                if (xScale <= maxXScale)
-                    xScale += scaleIncrement;
+        if (increment) {
+            if (xScale <= maxXScale)
+                xScale += scaleIncrement;
 
-                if (yScale <= maxYScale)
-                    yScale += scaleIncrement;
+            if (yScale <= maxYScale)
+                yScale += scaleIncrement;
 
-                if (yScale <= maxYScale ||
-                        xScale <= maxXScale)
-                    refresh += refreshIncrement;
+            if (yScale <= maxYScale ||
+                    xScale <= maxXScale)
+                refresh += refreshIncrement;
 
-                if (xScale >= maxXScale &&
-                        yScale >= maxYScale)
-                    anmationStart = false;
-
-            } else {
-                if (xScale > 1)
-                    xScale -= scaleIncrement;
-                if (yScale > 1)
-                    yScale -= scaleIncrement;
-                if (xScale > 1 ||
-                        yScale > 1)
-                    refresh -= refreshIncrement;
-                if (xScale <= 1)
-                    xScale = 1;
-                if (yScale <= 1)
-                    yScale = 1;
-                if (yScale == 1 && xScale == 1) {
-                    anmationStart = false;
-                    increment = true;
-                }
+            if (xScale >= maxXScale &&
+                    yScale >= maxYScale) {
+                scheduledFuture.cancel(false);
+                animationTimer.stop();
             }
-            try {
-                Thread.sleep(refresh);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+        } else {
+            if (xScale > 1)
+                xScale -= scaleIncrement;
+            if (yScale > 1)
+                yScale -= scaleIncrement;
+            if (xScale > 1 ||
+                    yScale > 1)
+                refresh -= refreshIncrement;
+            if (xScale <= 1)
+                xScale = 1;
+            if (yScale <= 1)
+                yScale = 1;
+            if (yScale == 1 && xScale == 1) {
+                scheduledFuture.cancel(false);
+                animationTimer.stop();
+                increment = true;
             }
         }
     }
 
-    protected AbstractAnimatedCartoonComponent(CartoonComponentGroup cartoonComponentGroup,int x, int y){
+    protected AbstractAnimatedCartoonComponent(CartoonComponentGroup cartoonComponentGroup, int x, int y) {
         this.cartoonComponentGroup = cartoonComponentGroup;
+        this.scheduledExecutorService = cartoonComponentGroup.getScheduledExecutorService();
         random = new Random();
         stackPane = new StackPane();
         button = new Rectangle();
-        button.setFill(Color.web("#333333",1d));
+        button.setFill(Color.web("#333333", 1d));
 
-        new AnimationTimer() {
+        animationTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 button.setScaleX(xScale);
                 button.setScaleY(yScale);
             }
-        }.start();
+        };
 
         stackPane.setLayoutX(x);
         stackPane.setLayoutY(y);
@@ -100,49 +98,59 @@ abstract class AbstractAnimatedCartoonComponent{
 
     void startExpensionAnimation() {
         increment = true;
-        if (!anmationStart) {
+        if (scheduledFuture == null || scheduledFuture.isCancelled()) {
+            animationTimer.start();
             maxXScale = xScale + (random.nextInt(5) + 5) / 100d;
             maxYScale = yScale + (random.nextInt(5) + 5) / 100d;
-            anmationStart = true;
-            new Thread(this::animation).start();
+            scheduledFuture =
+                    scheduledExecutorService.scheduleWithFixedDelay(
+                            this::animation,
+                            refresh,
+                            refresh,
+                            TimeUnit.MILLISECONDS);
         }
     }
 
-    public void setWidth(int width){
+    public void setWidth(int width) {
         button.setWidth(width);
         stackPane.setMaxWidth(width);
     }
 
-    public void setHeight(int height){
+    public void setHeight(int height) {
         button.setHeight(height);
         stackPane.setMaxHeight(height);
     }
 
-    public void setX(int x){
+    public void setX(int x) {
         button.setX(x);
     }
 
-    public void setY(int y){
+    public void setY(int y) {
         button.setY(y);
     }
 
-    void startDecreasingAnimation(){
+    void startDecreasingAnimation() {
         increment = false;
-        if (!anmationStart){
-            anmationStart = true;
-            new Thread(this::animation).start();
+        if (scheduledFuture == null || scheduledFuture.isCancelled()) {
+            animationTimer.start();
+            scheduledFuture =
+                    scheduledExecutorService.scheduleWithFixedDelay(
+                            this::animation,
+                            refresh,
+                            refresh,
+                            TimeUnit.MILLISECONDS);
         }
     }
 
-    public void setOnMousePressed(EventHandler<? super MouseEvent> ev){
+    public void setOnMousePressed(EventHandler<? super MouseEvent> ev) {
         button.setOnMousePressed(ev);
     }
 
-    public void setOnMouseReleased(EventHandler<? super MouseEvent> ev){
+    public void setOnMouseReleased(EventHandler<? super MouseEvent> ev) {
         button.setOnMouseReleased(ev);
     }
 
-    public void setOnMouseClicked(EventHandler<? super MouseEvent> ev){
+    public void setOnMouseClicked(EventHandler<? super MouseEvent> ev) {
         button.setOnMouseClicked(ev);
     }
 
@@ -154,15 +162,19 @@ abstract class AbstractAnimatedCartoonComponent{
         button.setOnMouseExited(ev);
     }
 
-    Pane getPane(){
+    Pane getPane() {
         return stackPane;
     }
 
-    protected CartoonComponentGroup getCartoonComponentGroup(){
+    protected CartoonComponentGroup getCartoonComponentGroup() {
         return cartoonComponentGroup;
     }
 
     protected Rectangle getButton() {
         return button;
+    }
+
+    protected ScheduledExecutorService getScheduledExecutorService() {
+        return scheduledExecutorService;
     }
 }
