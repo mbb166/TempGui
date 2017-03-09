@@ -10,10 +10,13 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
+import java.util.concurrent.ScheduledExecutorService;
 
-abstract class AbstractAnimatedCartoonComponent {
+abstract class AbstractAnimatedCartoonComponent{
     private Rectangle button;
     private StackPane stackPane;
+
+    private ScheduledExecutorService scheduledExecutorService;
 
     private Random random;
 

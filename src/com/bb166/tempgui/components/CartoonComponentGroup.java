@@ -5,14 +5,22 @@ import javafx.scene.input.KeyEvent;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 
 public final class CartoonComponentGroup{
     private Group group;
     private Set<AnimatedCartoonTextField> textComponents;
+    private ScheduledExecutorService scheduledExecutorService;
 
-    public CartoonComponentGroup(){
+    public CartoonComponentGroup(ScheduledExecutorService scheduledExecutorService){
+        this.scheduledExecutorService = scheduledExecutorService;
+
         textComponents = new HashSet<>();
         group = new Group();
+    }
+
+    public ScheduledExecutorService getScheduledExecutorService(){
+        return scheduledExecutorService;
     }
 
     void add(AbstractAnimatedCartoonComponent abstractAnimatedCartoonComponent){

@@ -5,7 +5,7 @@ import javafx.scene.paint.Paint;
 import java.util.*;
 
 public enum Color {
-    RED("#F71B1B"),GREEN("#2EE61A"),BLUE("#1A57E6"),YELLOW("#E5E520"),ORANGE("#E59020");
+    RED("#C70000"),GREEN("#00C71B"),BLUE("#1A57E6"),YELLOW("#E5E520"),ORANGE("#E59020");
 
     private static Random random = new Random();
     private static List<Paint> colors = new ArrayList<>();
@@ -30,5 +30,24 @@ public enum Color {
 
     public static Paint randomizeColor(){
         return colors.get(random.nextInt(colors.size()-1));
+    }
+
+    static class ColorsNotRepeat{
+        private List<Paint> colorsNotRepeat;
+
+        private ColorsNotRepeat(){
+            colorsNotRepeat = new LinkedList<>(colors);
+            Collections.shuffle(colorsNotRepeat);
+        }
+
+        public Paint getColorNotRepeat(){
+            if (colorsNotRepeat.size() != 0)
+                return colorsNotRepeat.remove(0);
+            else throw new IllegalStateException("Color not available");
+        }
+    }
+
+    public static ColorsNotRepeat getColorsNotRepeat(){
+        return new ColorsNotRepeat();
     }
 }

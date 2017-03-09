@@ -1,9 +1,6 @@
 package Test;
 
-import com.bb166.tempgui.components.AnimatedCartoonButton;
-import com.bb166.tempgui.components.AnimatedCartoonTextField;
-import com.bb166.tempgui.components.CartoonComponentGroup;
-import com.bb166.tempgui.components.CartoonComponentScene;
+import com.bb166.tempgui.components.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
@@ -20,6 +17,7 @@ public class Test extends Application {
         AnimatedCartoonTextField animatedCartoonTextField1 = new AnimatedCartoonTextField(cartoonComponentGroup,200,200,200,36);
         animatedCartoonButton.setOnMouseClicked(System.out::println);
         animatedCartoonButton.setLabel("Tak to juz jest");
+        CartoonLoadingAnimation cartoonLoadingAnimation = new CartoonLoadingAnimation(cartoonComponentGroup,400,400);
 
         CartoonComponentScene scene = new CartoonComponentScene(cartoonComponentGroup);
         primaryStage.setOnCloseRequest(e -> System.exit(0));
