@@ -2,6 +2,7 @@ package com.bb166.tempgui.components;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
+import javafx.geometry.Bounds;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -14,7 +15,7 @@ import javafx.scene.text.Text;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
+public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
     private Line cursor;
     private float cursorOpacity = 1f;
     private boolean disappearance = true;
@@ -60,10 +61,9 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         }
     };
 
-    public AnimatedCartoonTextField(CartoonComponentGroup cartoonComponentGroup,int x, int y, int width, int heigth) {
+    public AnimatedCartoonTextField(CartoonComponentGroup cartoonComponentGroup,int x, int y, int width) {
         super(cartoonComponentGroup,x, y);
         super.setWidth(width);
-        super.setHeight(heigth);
         cursor = new Line(x, y, x, y + 23);
         cursor.setTranslateX(-width / 2 + 5);
         cursor.setStroke(Color.web("#1E1E1E"));
@@ -74,6 +74,7 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         textControl.setTranslateX(-width / 2);
         textControl.setFill(Paint.valueOf("White"));
         textControl.setFont(new Font("Arial Black", 20));
+        super.setHeight((int)textControl.getLayoutBounds().getHeight()+16);
 
         super.getPane().getChildren().add(textControl);
         super.getPane().getChildren().add(cursor);
@@ -94,7 +95,7 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
         if ((event.getCode().isLetterKey() || event.getCode().isDigitKey()) &&
                 textControl.getLayoutBounds().getWidth() + 20 < super.getButton().getWidth()) {
 
-            text.append(event.getText());
+            text.append(event.isShiftDown() ? event.getText().toUpperCase() : event.getText());
             textControl.setText(text.toString());
             cursor.setTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
             textControl.setTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
@@ -105,9 +106,30 @@ public final class AnimatedCartoonTextField extends AbstractAnimatedCartoonCompo
             textControl.setText(text.toString());
             cursor.setTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
             textControl.setTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
-
         }
     }
+
+    protected void setCursorTranslateX(double value){
+        cursor.setTranslateX(value);
+    }
+
+    protected void setTextControlTranslateX(double value){
+        textControl.setTranslateX(value);
+    }
+
+    protected Bounds getTextControlBounds(){
+        return textControl.getLayoutBounds();
+    }
+
+    protected StringBuilder getText(){
+        return text;
+    }
+
+    protected void setTextControl(String text){
+        textControl.setText(text);
+    }
+
+    protected
 
     void startDecreasingAnimation(){
         super.startDecreasingAnimation();

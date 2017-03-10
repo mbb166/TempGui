@@ -16,8 +16,8 @@ public class Test extends Application {
     public void start(Stage primaryStage) throws Exception {
         CartoonComponentGroup cartoonComponentGroup = new CartoonComponentGroup(Executors.newScheduledThreadPool(2));
         AnimatedCartoonButton animatedCartoonButton = new AnimatedCartoonButton(cartoonComponentGroup,60,10);
-        AnimatedCartoonTextField animatedCartoonTextField = new AnimatedCartoonTextField(cartoonComponentGroup,100,100,200,36);
-        AnimatedCartoonTextField animatedCartoonTextField1 = new AnimatedCartoonTextField(cartoonComponentGroup,200,200,200,36);
+        AnimatedCartoonTextField animatedCartoonTextField = new AnimatedCartoonTextField(cartoonComponentGroup,100,100,200);
+        AnimatedCartoonTextField animatedCartoonTextField1 = new AnimatedCartoonPasswordField(cartoonComponentGroup,200,200,200);
         animatedCartoonButton.setOnMouseClicked(System.out::println);
         animatedCartoonButton.setLabel("Tak to juz jest");
         CartoonLoadingAnimation cartoonLoadingAnimation = new CartoonLoadingAnimation(cartoonComponentGroup,400,400);

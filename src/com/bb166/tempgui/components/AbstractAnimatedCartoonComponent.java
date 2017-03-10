@@ -13,12 +13,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-abstract class AbstractAnimatedCartoonComponent {
+abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     private Rectangle button;
     private StackPane stackPane;
-
-    private ScheduledExecutorService scheduledExecutorService;
-    private AnimationTimer animationTimer;
 
     private Random random;
 
@@ -35,6 +32,14 @@ abstract class AbstractAnimatedCartoonComponent {
 
     private ScheduledFuture<?> scheduledFuture;
     private volatile boolean increment = true;
+
+    private AnimationTimer animationTimer = new AnimationTimer() {
+        @Override
+        public void handle(long now) {
+            button.setScaleX(xScale);
+            button.setScaleY(yScale);
+        }
+    };
 
     private void animation() {
         if (increment) {
@@ -74,20 +79,13 @@ abstract class AbstractAnimatedCartoonComponent {
     }
 
     protected AbstractAnimatedCartoonComponent(CartoonComponentGroup cartoonComponentGroup, int x, int y) {
+        super(cartoonComponentGroup.getScheduledExecutorService());
         this.cartoonComponentGroup = cartoonComponentGroup;
-        this.scheduledExecutorService = cartoonComponentGroup.getScheduledExecutorService();
+
         random = new Random();
         stackPane = new StackPane();
         button = new Rectangle();
         button.setFill(Color.web("#333333", 1d));
-
-        animationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                button.setScaleX(xScale);
-                button.setScaleY(yScale);
-            }
-        };
 
         stackPane.setLayoutX(x);
         stackPane.setLayoutY(y);
@@ -103,7 +101,7 @@ abstract class AbstractAnimatedCartoonComponent {
             maxXScale = xScale + (random.nextInt(5) + 5) / 100d;
             maxYScale = yScale + (random.nextInt(5) + 5) / 100d;
             scheduledFuture =
-                    scheduledExecutorService.scheduleWithFixedDelay(
+                    super.getScheduledExecutorService().scheduleWithFixedDelay(
                             this::animation,
                             refresh,
                             refresh,
@@ -134,7 +132,7 @@ abstract class AbstractAnimatedCartoonComponent {
         if (scheduledFuture == null || scheduledFuture.isCancelled()) {
             animationTimer.start();
             scheduledFuture =
-                    scheduledExecutorService.scheduleWithFixedDelay(
+                    super.getScheduledExecutorService().scheduleWithFixedDelay(
                             this::animation,
                             refresh,
                             refresh,
@@ -172,9 +170,5 @@ abstract class AbstractAnimatedCartoonComponent {
 
     protected Rectangle getButton() {
         return button;
-    }
-
-    protected ScheduledExecutorService getScheduledExecutorService() {
-        return scheduledExecutorService;
     }
 }

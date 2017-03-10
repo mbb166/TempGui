@@ -4,11 +4,10 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.shape.*;
 
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-public class CartoonLoadingAnimation {
+public class CartoonLoadingAnimation extends CartoonNode{
     private Rectangle first;
     private Rectangle second;
     private Rectangle third;
@@ -22,10 +21,7 @@ public class CartoonLoadingAnimation {
     private boolean thirdVisible = false;
     private boolean fourthVisible = false;
 
-    private Group group;
-
     private AnimationTimer animationTimer;
-    private ScheduledExecutorService scheduledExecutorService;
     private ScheduledFuture<?> scheduledFuture;
 
     private int refresh = 5;
@@ -60,15 +56,11 @@ public class CartoonLoadingAnimation {
     };
 
     public CartoonLoadingAnimation(CartoonComponentGroup group,int x, int y) {
-        this.group = new Group();
-        this.group.setLayoutX(x);
-        this.group.setLayoutY(y);
-        this.group.maxWidth(55);
-        this.group.maxHeight(55);
-
-        this.scheduledExecutorService  = group.getScheduledExecutorService();
-
-        Color.ColorsNotRepeat colors = Color.getColorsNotRepeat();
+        super(group.getScheduledExecutorService());
+        super.getPane().setLayoutX(x);
+        super.getPane().setLayoutY(y);
+        super.getPane().maxWidth(55);
+        super.getPane().maxHeight(55);
 
         animationTimer = new AnimationTimer() {
             public void handle(long event){
@@ -89,29 +81,29 @@ public class CartoonLoadingAnimation {
         first.setHeight(5);
         first.setTranslateX(-9);
         first.setTranslateY(-9);
-        first.setFill(colors.getColorNotRepeat());
+        first.setFill(javafx.scene.paint.Color.web("#1E1E1E"));
 
         second = new Rectangle();
         second.setHeight(5);
         second.setWidth(5);
         second.setTranslateY(-9);
-        second.setFill(colors.getColorNotRepeat());
+        second.setFill(javafx.scene.paint.Color.web("#1E1E1E"));
 
         third = new Rectangle();
         third.setHeight(5);
         third.setWidth(5);
-        third.setFill(colors.getColorNotRepeat());
+        third.setFill(javafx.scene.paint.Color.web("#1E1E1E"));
 
         fourth = new Rectangle();
         fourth.setHeight(5);
         fourth.setWidth(5);
         fourth.setTranslateX(-9);
-        fourth.setFill(colors.getColorNotRepeat());
+        fourth.setFill(javafx.scene.paint.Color.web("#1E1E1E"));
 
-        this.group.getChildren().add(first);
-        this.group.getChildren().add(second);
-        this.group.getChildren().add(third);
-        this.group.getChildren().add(fourth);
+        super.getPane().getChildren().add(first);
+        super.getPane().getChildren().add(second);
+        super.getPane().getChildren().add(third);
+        super.getPane().getChildren().add(fourth);
 
         first.setVisible(false);
         second.setVisible(false);
@@ -123,7 +115,7 @@ public class CartoonLoadingAnimation {
 
     public void start(){
         animationTimer.start();
-        scheduledFuture = scheduledExecutorService.scheduleWithFixedDelay(
+        scheduledFuture = super.getScheduledExecutorService().scheduleWithFixedDelay(
                 runnable,
                 refresh,
                 refresh,
@@ -138,12 +130,7 @@ public class CartoonLoadingAnimation {
         secondVisible = false;
         thirdVisible = false;
         fourthVisible = false;
-
         opacity = 1f;
         appearance = true;
-    }
-
-    Group getGroup() {
-        return group;
     }
 }

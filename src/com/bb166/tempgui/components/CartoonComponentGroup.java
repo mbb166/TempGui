@@ -23,16 +23,13 @@ public final class CartoonComponentGroup{
         return scheduledExecutorService;
     }
 
-    void add(AbstractAnimatedCartoonComponent abstractAnimatedCartoonComponent){
-        group.getChildren().add(abstractAnimatedCartoonComponent.getPane());
+    void add(CartoonNode cartoonNode){
+        group.getChildren().add(cartoonNode.getPane());
 
-        if (abstractAnimatedCartoonComponent instanceof AnimatedCartoonTextField)
-            textComponents.add((AnimatedCartoonTextField) abstractAnimatedCartoonComponent);
+        if (cartoonNode instanceof AnimatedCartoonTextField)
+            textComponents.add((AnimatedCartoonTextField) cartoonNode);
     }
 
-    void add(CartoonLoadingAnimation cartoonLoadingAnimation){
-        group.getChildren().add(cartoonLoadingAnimation.getGroup());
-    }
 
     void focusedTextComponent(AbstractAnimatedCartoonComponent animatedCartoonTextField) {
         textComponents.forEach(element -> {

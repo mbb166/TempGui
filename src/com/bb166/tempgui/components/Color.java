@@ -31,23 +31,4 @@ public enum Color {
     public static Paint randomizeColor(){
         return colors.get(random.nextInt(colors.size()-1));
     }
-
-    static class ColorsNotRepeat{
-        private List<Paint> colorsNotRepeat;
-
-        private ColorsNotRepeat(){
-            colorsNotRepeat = new LinkedList<>(colors);
-            Collections.shuffle(colorsNotRepeat);
-        }
-
-        public Paint getColorNotRepeat(){
-            if (colorsNotRepeat.size() != 0)
-                return colorsNotRepeat.remove(0);
-            else throw new IllegalStateException("Color not available");
-        }
-    }
-
-    public static ColorsNotRepeat getColorsNotRepeat(){
-        return new ColorsNotRepeat();
-    }
 }
