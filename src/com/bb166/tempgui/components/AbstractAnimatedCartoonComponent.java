@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     private Rectangle button;
-    private StackPane stackPane;
 
     private Random random;
 
@@ -83,13 +82,12 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
         this.cartoonComponentGroup = cartoonComponentGroup;
 
         random = new Random();
-        stackPane = new StackPane();
         button = new Rectangle();
         button.setFill(Color.web("#333333", 1d));
 
-        stackPane.setLayoutX(x);
-        stackPane.setLayoutY(y);
-        stackPane.getChildren().add(button);
+        super.getPane().setLayoutX(x);
+        super.getPane().setLayoutY(y);
+        super.getPane().getChildren().add(button);
 
         cartoonComponentGroup.add(this);
     }
@@ -111,12 +109,12 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
 
     public void setWidth(int width) {
         button.setWidth(width);
-        stackPane.setMaxWidth(width);
+        super.getPane().setMaxWidth(width);
     }
 
     public void setHeight(int height) {
         button.setHeight(height);
-        stackPane.setMaxHeight(height);
+        super.getPane().setMaxHeight(height);
     }
 
     public void setX(int x) {
@@ -158,10 +156,6 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
 
     public void setOnMouseExited(EventHandler<? super MouseEvent> ev) {
         button.setOnMouseExited(ev);
-    }
-
-    Pane getPane() {
-        return stackPane;
     }
 
     protected CartoonComponentGroup getCartoonComponentGroup() {

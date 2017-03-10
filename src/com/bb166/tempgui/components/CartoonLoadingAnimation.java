@@ -1,7 +1,6 @@
 package com.bb166.tempgui.components;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.Group;
 import javafx.scene.shape.*;
 
 import java.util.concurrent.ScheduledFuture;
