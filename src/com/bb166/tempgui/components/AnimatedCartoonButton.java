@@ -35,7 +35,7 @@ public final class AnimatedCartoonButton extends AbstractAnimatedCartoonComponen
                 .getChildren()
                 .add(label);
 
-        super.getButton().setFill(Color.randomizeColor());
+        super.getRectangle().setFill(Color.randomizeColor());
     }
 
     public String getLabel() {

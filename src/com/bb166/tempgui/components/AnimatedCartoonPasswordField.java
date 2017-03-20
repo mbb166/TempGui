@@ -20,10 +20,11 @@ public class AnimatedCartoonPasswordField extends AnimatedCartoonTextField {
                 stars.deleteCharAt(stars.length() - 1);
             else
                 stars.append('•');
+
             super.setTextControl(stars.toString());
 
-            super.setCursorTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + super.getTextControlBounds().getWidth() + 10);
-            super.setTextControlTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(super.getTextControlBounds().getWidth() / 2d) + 7);
+            super.setCursorTranslateX(-Math.ceil(super.getRectangle().getWidth() / 2d) + super.getTextControlBounds().getWidth() + 10);
+            super.setTextControlTranslateX(-Math.round(super.getRectangle().getWidth() / 2d) + Math.round(super.getTextControlBounds().getWidth() / 2d) + 7);
         }
     }
 }

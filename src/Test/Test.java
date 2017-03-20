@@ -22,6 +22,9 @@ public class Test extends Application {
         animatedCartoonButton.setLabel("Tak to juz jest");
         CartoonLoadingAnimation cartoonLoadingAnimation = new CartoonLoadingAnimation(cartoonComponentGroup,400,400);
         cartoonLoadingAnimation.start();
+
+        AnimatedCartoonList animatedCartoonList = new AnimatedCartoonList(cartoonComponentGroup,500,100,3);
+        animatedCartoonList.addLine("sdadsadas","dsasda","asdsaddsa");
         CartoonComponentScene scene = new CartoonComponentScene(cartoonComponentGroup);
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 

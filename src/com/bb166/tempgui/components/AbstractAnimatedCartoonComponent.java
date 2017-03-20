@@ -3,18 +3,15 @@ package com.bb166.tempgui.components;
 import javafx.animation.AnimationTimer;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
-    private Rectangle button;
+    private Rectangle rectangle;
 
     private Random random;
 
@@ -35,8 +32,8 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     private AnimationTimer animationTimer = new AnimationTimer() {
         @Override
         public void handle(long now) {
-            button.setScaleX(xScale);
-            button.setScaleY(yScale);
+            rectangle.setScaleX(xScale);
+            rectangle.setScaleY(yScale);
         }
     };
 
@@ -82,12 +79,12 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
         this.cartoonComponentGroup = cartoonComponentGroup;
 
         random = new Random();
-        button = new Rectangle();
-        button.setFill(Color.web("#333333", 1d));
+        rectangle = new Rectangle();
+        rectangle.setFill(Color.web("#333333", 1d));
 
         super.getPane().setLayoutX(x);
         super.getPane().setLayoutY(y);
-        super.getPane().getChildren().add(button);
+        super.getPane().getChildren().add(rectangle);
 
         cartoonComponentGroup.add(this);
     }
@@ -108,21 +105,21 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     }
 
     public void setWidth(int width) {
-        button.setWidth(width);
+        rectangle.setWidth(width);
         super.getPane().setMaxWidth(width);
     }
 
     public void setHeight(int height) {
-        button.setHeight(height);
+        rectangle.setHeight(height);
         super.getPane().setMaxHeight(height);
     }
 
     public void setX(int x) {
-        button.setX(x);
+        rectangle.setX(x);
     }
 
     public void setY(int y) {
-        button.setY(y);
+        rectangle.setY(y);
     }
 
     void startDecreasingAnimation() {
@@ -139,30 +136,30 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     }
 
     public void setOnMousePressed(EventHandler<? super MouseEvent> ev) {
-        button.setOnMousePressed(ev);
+        rectangle.setOnMousePressed(ev);
     }
 
     public void setOnMouseReleased(EventHandler<? super MouseEvent> ev) {
-        button.setOnMouseReleased(ev);
+        rectangle.setOnMouseReleased(ev);
     }
 
     public void setOnMouseClicked(EventHandler<? super MouseEvent> ev) {
-        button.setOnMouseClicked(ev);
+        rectangle.setOnMouseClicked(ev);
     }
 
     public void setOnMouseEntered(EventHandler<? super MouseEvent> ev) {
-        button.setOnMouseEntered(ev);
+        rectangle.setOnMouseEntered(ev);
     }
 
     public void setOnMouseExited(EventHandler<? super MouseEvent> ev) {
-        button.setOnMouseExited(ev);
+        rectangle.setOnMouseExited(ev);
     }
 
     protected CartoonComponentGroup getCartoonComponentGroup() {
         return cartoonComponentGroup;
     }
 
-    protected Rectangle getButton() {
-        return button;
+    protected Rectangle getRectangle() {
+        return rectangle;
     }
 }

@@ -93,19 +93,19 @@ public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
 
     void addCharacterToLabel(KeyEvent event) {
         if ((event.getCode().isLetterKey() || event.getCode().isDigitKey()) &&
-                textControl.getLayoutBounds().getWidth() + 20 < super.getButton().getWidth()) {
+                textControl.getLayoutBounds().getWidth() + 20 < super.getRectangle().getWidth()) {
 
             text.append(event.isShiftDown() ? event.getText().toUpperCase() : event.getText());
             textControl.setText(text.toString());
-            cursor.setTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
-            textControl.setTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
+            cursor.setTranslateX(-Math.ceil(super.getRectangle().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
+            textControl.setTranslateX(-Math.round(super.getRectangle().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
 
         } else if (event.getCode() == KeyCode.BACK_SPACE && text.length() != 0) {
 
             text.deleteCharAt(text.length() - 1);
             textControl.setText(text.toString());
-            cursor.setTranslateX(-Math.ceil(super.getButton().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
-            textControl.setTranslateX(-Math.round(super.getButton().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
+            cursor.setTranslateX(-Math.ceil(super.getRectangle().getWidth() / 2d) + textControl.getLayoutBounds().getWidth() + 10);
+            textControl.setTranslateX(-Math.round(super.getRectangle().getWidth() / 2d) + Math.round(textControl.getLayoutBounds().getWidth() / 2d) + 7);
         }
     }
 
