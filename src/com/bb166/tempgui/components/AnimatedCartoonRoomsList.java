@@ -25,6 +25,9 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
     private FlowPane ownerPane;
     private Text ownerText;
 
+    private FlowPane playersCountPane;
+    private Text playersCountText;
+
     public AnimatedCartoonRoomsList(CartoonComponentGroup group, int x, int y) {
         super.setWidth(width);
         super.setHeight(height);
@@ -45,13 +48,21 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
 
         roomnamePane = new FlowPane();
         roomnameText = new Text("Rooms name");
+        roomnamePane.setMinWidth(400);
         this.setParameters(roomnamePane,roomnameText);
         header.getChildren().add(roomnamePane);
 
         ownerPane = new FlowPane();
         ownerText = new Text("Owner");
+        ownerPane.setMinWidth(150);
         this.setParameters(ownerPane,ownerText);
         header.getChildren().add(ownerPane);
+
+        playersCountPane = new FlowPane();
+        playersCountText = new Text("Players count");
+        playersCountPane.setAlignment(Pos.CENTER_RIGHT);
+        this.setParameters(playersCountPane,playersCountText);
+        header.getChildren().add(playersCountPane);
 
         super.add(header);
 
@@ -62,7 +73,6 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
         text.setFont(headerFont);
         text.setFill(Color.WHITE);
         pane.setAlignment(Pos.BASELINE_LEFT);
-        pane.setMinWidth(170);
         pane.getChildren().add(text);
         pane.setTranslateY(-12);
         pane.setTranslateX(5);
