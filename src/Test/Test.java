@@ -22,9 +22,8 @@ public class Test extends Application {
         CartoonLoadingAnimation cartoonLoadingAnimation = new CartoonLoadingAnimation(cartoonComponentGroup,400,400);
         cartoonLoadingAnimation.start();
 
-        AnimatedCartoonRoomsList animatedCartoonList = new AnimatedCartoonRoomsList(cartoonComponentGroup,500,100,3);
-        animatedCartoonList.addLine("sdadsadas","dsasda","asdsaddsa");
-        animatedCartoonList.addLine("sdadsadas","dsasda","asdsaddsa");
+        AnimatedCartoonRoomsList animatedCartoonList = new AnimatedCartoonRoomsList(cartoonComponentGroup,500,100);
+
         CartoonComponentScene scene = new CartoonComponentScene(cartoonComponentGroup);
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 

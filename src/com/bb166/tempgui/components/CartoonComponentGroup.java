@@ -6,6 +6,8 @@ import javafx.scene.input.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 public final class CartoonComponentGroup{
     private Group group;
@@ -19,8 +21,12 @@ public final class CartoonComponentGroup{
         group = new Group();
     }
 
-    public ScheduledExecutorService getScheduledExecutorService(){
-        return scheduledExecutorService;
+    public ScheduledFuture<?> addRunnableToScheduledExecutorService(Runnable runnable, int delay){
+       return scheduledExecutorService.scheduleWithFixedDelay(
+               runnable,
+               delay,
+               delay,
+               TimeUnit.MILLISECONDS);
     }
 
     void add(CartoonNode cartoonNode){

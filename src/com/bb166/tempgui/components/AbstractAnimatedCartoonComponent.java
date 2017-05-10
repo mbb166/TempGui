@@ -8,7 +8,6 @@ import javafx.scene.shape.Rectangle;
 
 import java.util.Random;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     private Rectangle rectangle;
@@ -75,16 +74,15 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
     }
 
     protected AbstractAnimatedCartoonComponent(CartoonComponentGroup cartoonComponentGroup, int x, int y) {
-        super(cartoonComponentGroup.getScheduledExecutorService());
         this.cartoonComponentGroup = cartoonComponentGroup;
 
         random = new Random();
         rectangle = new Rectangle();
         rectangle.setFill(Color.web("#333333", 1d));
 
-        super.getPane().setLayoutX(x);
-        super.getPane().setLayoutY(y);
-        super.getPane().getChildren().add(rectangle);
+        super.setX(x);
+        super.setY(y);
+        super.add(rectangle);
 
         cartoonComponentGroup.add(this);
     }
@@ -96,22 +94,18 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
             maxXScale = xScale + (random.nextInt(5) + 5) / 100d;
             maxYScale = yScale + (random.nextInt(5) + 5) / 100d;
             scheduledFuture =
-                    super.getScheduledExecutorService().scheduleWithFixedDelay(
-                            this::animation,
-                            refresh,
-                            refresh,
-                            TimeUnit.MILLISECONDS);
+                    this.cartoonComponentGroup.addRunnableToScheduledExecutorService(this::animation,refresh);
         }
     }
 
     public void setWidth(int width) {
         rectangle.setWidth(width);
-        super.getPane().setMaxWidth(width);
+        super.setWidth(width);
     }
 
     public void setHeight(int height) {
         rectangle.setHeight(height);
-        super.getPane().setMaxHeight(height);
+        super.setHeight(height);
     }
 
     public void setX(int x) {
@@ -127,11 +121,7 @@ abstract class AbstractAnimatedCartoonComponent extends CartoonNode {
         if (scheduledFuture == null || scheduledFuture.isCancelled()) {
             animationTimer.start();
             scheduledFuture =
-                    super.getScheduledExecutorService().scheduleWithFixedDelay(
-                            this::animation,
-                            refresh,
-                            refresh,
-                            TimeUnit.MILLISECONDS);
+                    this.cartoonComponentGroup.addRunnableToScheduledExecutorService(this::animation,refresh);
         }
     }
 

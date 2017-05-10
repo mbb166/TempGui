@@ -23,6 +23,8 @@ public class CartoonLoadingAnimation extends CartoonNode{
     private AnimationTimer animationTimer;
     private ScheduledFuture<?> scheduledFuture;
 
+    private CartoonComponentGroup cartoonComponentGroup;
+
     private int refresh = 5;
 
     private Runnable runnable = () -> {
@@ -55,11 +57,11 @@ public class CartoonLoadingAnimation extends CartoonNode{
     };
 
     public CartoonLoadingAnimation(CartoonComponentGroup group,int x, int y) {
-        super(group.getScheduledExecutorService());
-        super.getPane().setLayoutX(x);
-        super.getPane().setLayoutY(y);
-        super.getPane().maxWidth(55);
-        super.getPane().maxHeight(55);
+        this.cartoonComponentGroup = group;
+        super.setX(x);
+        super.setY(y);
+        super.setWidth(55);
+        super.setHeight(55);
 
         animationTimer = new AnimationTimer() {
             public void handle(long event){
@@ -99,10 +101,10 @@ public class CartoonLoadingAnimation extends CartoonNode{
         fourth.setTranslateX(-9);
         fourth.setFill(javafx.scene.paint.Color.web("#1E1E1E"));
 
-        super.getPane().getChildren().add(first);
-        super.getPane().getChildren().add(second);
-        super.getPane().getChildren().add(third);
-        super.getPane().getChildren().add(fourth);
+        super.add(first);
+        super.add(second);
+        super.add(third);
+        super.add(fourth);
 
         first.setVisible(false);
         second.setVisible(false);
@@ -114,11 +116,7 @@ public class CartoonLoadingAnimation extends CartoonNode{
 
     public void start(){
         animationTimer.start();
-        scheduledFuture = super.getScheduledExecutorService().scheduleWithFixedDelay(
-                runnable,
-                refresh,
-                refresh,
-                TimeUnit.MILLISECONDS);
+        scheduledFuture = cartoonComponentGroup.addRunnableToScheduledExecutorService(runnable,refresh);
 
     }
 

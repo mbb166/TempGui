@@ -52,11 +52,7 @@ public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
             if (scheduledFuture == null || scheduledFuture.isCancelled()) {
                 cursor.setVisible(true);
                 animationTimer.start();
-                scheduledFuture = super.getScheduledExecutorService().scheduleAtFixedRate(
-                        cursorAnimation,
-                        refresh,
-                        refresh,
-                        TimeUnit.MILLISECONDS);
+                scheduledFuture = super.getCartoonComponentGroup().addRunnableToScheduledExecutorService(cursorAnimation,refresh);
             }
         }
     };
@@ -76,8 +72,8 @@ public class AnimatedCartoonTextField extends AbstractAnimatedCartoonComponent {
         textControl.setFont(new Font("Arial Black", 20));
         super.setHeight((int)textControl.getLayoutBounds().getHeight()+16);
 
-        super.getPane().getChildren().add(textControl);
-        super.getPane().getChildren().add(cursor);
+        super.add(textControl);
+        super.add(cursor);
 
         super.setOnMouseClicked(focusedEvent);
         cursor.setOnMouseClicked(focusedEvent);

@@ -30,10 +30,7 @@ public final class AnimatedCartoonButton extends AbstractAnimatedCartoonComponen
         label.setOnMouseEntered(event -> super.startExpensionAnimation());
         label.setOnMouseExited(event -> super.startDecreasingAnimation());
 
-        super
-                .getPane()
-                .getChildren()
-                .add(label);
+        super.add(label);
 
         super.getRectangle().setFill(Color.randomizeColor());
     }
@@ -46,8 +43,8 @@ public final class AnimatedCartoonButton extends AbstractAnimatedCartoonComponen
         this.label.setText(label);
         Bounds bounds = this.label.getLayoutBounds();
         super.setWidth((int) (bounds.getWidth() + horizontalSpace));
-        this.label.setX(super.getPane().getLayoutX() + horizontalSpace / 2);
-        this.label.setY(super.getPane().getLayoutY() + verticalSpace / 2);
+        this.label.setX(super.getX() + horizontalSpace / 2);
+        this.label.setY(super.getY() + verticalSpace / 2);
     }
 
     public void setOnMousePressed(EventHandler<? super MouseEvent> ev) {
