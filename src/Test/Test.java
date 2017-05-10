@@ -4,7 +4,6 @@ import com.bb166.tempgui.components.*;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Test extends Application {
@@ -23,7 +22,8 @@ public class Test extends Application {
         CartoonLoadingAnimation cartoonLoadingAnimation = new CartoonLoadingAnimation(cartoonComponentGroup,400,400);
         cartoonLoadingAnimation.start();
 
-        AnimatedCartoonList animatedCartoonList = new AnimatedCartoonList(cartoonComponentGroup,500,100,3);
+        AnimatedCartoonRoomsList animatedCartoonList = new AnimatedCartoonRoomsList(cartoonComponentGroup,500,100,3);
+        animatedCartoonList.addLine("sdadsadas","dsasda","asdsaddsa");
         animatedCartoonList.addLine("sdadsadas","dsasda","asdsaddsa");
         CartoonComponentScene scene = new CartoonComponentScene(cartoonComponentGroup);
         primaryStage.setOnCloseRequest(e -> System.exit(0));
