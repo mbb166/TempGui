@@ -26,6 +26,14 @@ abstract class CartoonNode {
         stackPane.setMaxHeight(height);
     }
 
+    public int getWidth(){
+        return (int) stackPane.getMaxWidth();
+    }
+
+    public int getHeight(){
+        return (int) stackPane.getMaxHeight();
+    }
+
     public void setX(int x) {
         stackPane.setLayoutX(x);
     }
