@@ -15,11 +15,13 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledFuture;
-
+import java.util.stream.Collectors;
 
 public class AnimatedCartoonRoomsList extends CartoonNode {
     private static final double roomNameWidthProportion = 0.57;
@@ -30,7 +32,13 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
     private final int ownerWidth;
     private final int playerCountWidth;
 
+    private List<RoomLine> lines;
+
     private VBox list;
+
+    private int lastLineView;
+    private int firstLineView;
+    private final int maxLineToView;
 
     private CartoonComponentGroup group;
 
@@ -51,8 +59,6 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
 
     private FlowPane playersCountPane;
     private Text playersCountText;
-
-    private ScheduledFuture<?> opacityDecrement;
 
     private Queue<Runnable> rowToRemove;
     private Future<?> rowDeleteFuture;
@@ -148,31 +154,37 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
     }
 
     public AnimatedCartoonRoomsList(CartoonComponentGroup group, int x, int y, int width, int height) {
+        lastLineView = (height / lineHeight)-1;
+        maxLineToView = lastLineView;
+        int h = (int) (lineHeight * Math.ceil(height / lineHeight));
+        lines = new LinkedList<>();
+
         roomNameWidth = (int) (width * roomNameWidthProportion);
         ownerWidth = (int) (width * ownerPlayersWidthProportion);
         playerCountWidth = ownerWidth;
 
         rowToRemove = new ConcurrentLinkedQueue<>();
         list = new VBox();
+        list.setPrefHeight(h);
+        list.setMaxWidth(width - 30);
 
         headerPane = new StackPane();
         headerPane.setMinWidth(width);
-        headerPane.setMinHeight(36);
+        headerPane.setMinHeight(lineHeight);
 
         super.setWidth(width);
-        super.setHeight(height);
+        super.setHeight(h);
         super.setX(x);
         super.setY(y);
 
-        rectangle = new Rectangle(x, y, width, height);
+        rectangle = new Rectangle(x, y, width, h);
         rectangle.setFill(Color.web("#333333", 1d));
         super.add(rectangle);
 
         header = new HBox();
-        header.setTranslateX(5);
-        header.setTranslateY(4);
+        header.setTranslateX(3);
 
-        headerRectangle = new Rectangle(0, 0, width, 36);
+        headerRectangle = new Rectangle(0, 0, width, lineHeight);
         headerRectangle.setFill(Color.valueOf("#5A5A5A"));
         super.add(headerRectangle);
         headerFont = Font.font("Arial Black", FontWeight.BOLD, 18);
@@ -218,10 +230,76 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
     }
 
     public void addLine(RoomLine roomLine) {
-        roomLine.setOpacity(0f);
-        list.getChildren().add(roomLine);
+        lines.add(roomLine);
 
-        FadeTransition fadeTransition = new FadeTransition(Duration.millis(2000), roomLine);
+        if (list.getChildren().size() * lineHeight < AnimatedCartoonRoomsList.this.getHeight()) {
+            roomLine.setOpacity(0f);
+            list.getChildren().add(roomLine);
+            animateLine(roomLine);
+        }
+    }
+
+    public void shiftViewedList(int shift) {
+        if (shift > 0) {
+            if (shift < lines.size() - lastLineView) {
+                list
+                        .getChildren()
+                        .remove(1, shift + 1);
+
+                List<RoomLine> addLines = lines.subList(
+                        lastLineView + 1,
+                        lastLineView + shift + 1
+                );
+
+                list
+                        .getChildren()
+                        .addAll(addLines);
+
+                addLines.forEach(this::animateLine);
+
+                firstLineView += shift;
+                lastLineView += shift;
+            } else {
+                list
+                        .getChildren()
+                        .remove(1, lines.size() - lastLineView);
+
+                List<RoomLine> addLines = lines.subList(
+                        lastLineView + 1,
+                        lines.size()
+                );
+
+                list
+                        .getChildren()
+                        .addAll(addLines);
+
+                addLines.forEach(this::animateLine);
+
+                firstLineView = lines.size() - maxLineToView;
+                lastLineView = lines.size() - 1;
+            }
+        } else if (shift < 0) {
+            if (shift > -firstLineView){
+                list
+                        .getChildren()
+                        .remove(maxLineToView+shift+1,
+                                maxLineToView+1);
+
+                List<RoomLine> addLines = lines.subList(firstLineView + shift, firstLineView);
+
+                list.getChildren().addAll(1,addLines);
+
+                Collections.reverse(addLines);
+                addLines.forEach(this::animateLine);
+
+                firstLineView += shift;
+                lastLineView += shift;
+            }
+        }
+    }
+
+    private void animateLine(RoomLine roomLine) {
+        FadeTransition fadeTransition = new FadeTransition(Duration.millis(200), roomLine);
         fadeTransition.setFromValue(0f);
         fadeTransition.setToValue(1f);
         fadeTransition.play();
@@ -232,6 +310,10 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
             if (node == list.get(i))
                 return i;
         return -1;
+    }
+
+    public int size() {
+        return lines.size();
     }
 
     public void removeLine(RoomLine roomLine) {
@@ -279,8 +361,13 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
         if (getNodeIndex(list.getChildren(), roomLine) != -1) {
             rowToRemove.add(removeAction);
             if (rowDeleteFuture == null || rowDeleteFuture.isDone())
-                rowDeleteFuture = group.executeRunnable(()->rowToRemove.forEach(Runnable::run));
+                rowDeleteFuture = group.executeRunnable(() -> rowToRemove.forEach(Runnable::run));
 
         }
     }
+
+    public int getMaxLineToView() {
+        return maxLineToView;
+    }
+
 }
