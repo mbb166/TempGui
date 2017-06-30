@@ -89,20 +89,20 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
 
             super.setOnMouseEntered(event -> {
                 focused.stop();
-                focused.setToValue(Color.valueOf("#733333"));
+                focused.setToValue(Color.valueOf("#393939"));
                 focused.play();
             });
 
             super.setOnMouseExited(event -> {
                 focused.stop();
-                focused.setToValue(Color.valueOf("#433333"));
+                focused.setToValue(Color.valueOf("#3F3F3F"));
                 focused.play();
             });
 
             rectangle = new Rectangle(0, 0,
                     AnimatedCartoonRoomsList.this.getWidth(),
                     30);
-            rectangle.setFill(Color.valueOf("#433333"));
+            rectangle.setFill(Color.valueOf("#3F3F3F"));
 
             focused = new FillTransition(Duration.millis(200), rectangle);
 
@@ -185,7 +185,7 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
         header.setTranslateX(3);
 
         headerRectangle = new Rectangle(0, 0, width, lineHeight);
-        headerRectangle.setFill(Color.valueOf("#5A5A5A"));
+        headerRectangle.setFill(Color.valueOf("#545454"));
         super.add(headerRectangle);
         headerFont = Font.font("Arial Black", FontWeight.BOLD, 18);
 
@@ -239,6 +239,7 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
         }
     }
 
+
     public void shiftViewedList(int shift) {
         if (shift > 0) {
             if (shift < lines.size() - lastLineView) {
@@ -285,11 +286,10 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
                         .remove(maxLineToView+shift+1,
                                 maxLineToView+1);
 
-                List<RoomLine> addLines = lines.subList(firstLineView + shift, firstLineView);
+                List<RoomLine> addLines = lines.subList(firstLineView + shift-1, firstLineView-1);
 
                 list.getChildren().addAll(1,addLines);
 
-                Collections.reverse(addLines);
                 addLines.forEach(this::animateLine);
 
                 firstLineView += shift;

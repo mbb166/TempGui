@@ -14,14 +14,12 @@ public class RoomsListScrollbar extends AbstractAnimatedCartoonComponent {
         super(group, animatedCartoonRoomsList.getX() + animatedCartoonRoomsList.getWidth() + 10, animatedCartoonRoomsList.getY() + 30);
         super.setHeight(animatedCartoonRoomsList.getHeight() - 30);
         super.setWidth(30);
-
-
         this.animatedCartoonRoomsList = animatedCartoonRoomsList;
 
         if (animatedCartoonRoomsList.size() - 30 < animatedCartoonRoomsList.getHeight()) {
             hiddenLinesCount = animatedCartoonRoomsList.size() - animatedCartoonRoomsList.getMaxLineToView();
             scroll = new Rectangle(30, super.getHeight() -hiddenLinesCount);
-
+            scroll.setFill(Color.randomizeColor());
             scroll.setTranslateY(-hiddenLinesCount / 2);
             super.add(scroll);
         }
