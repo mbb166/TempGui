@@ -111,6 +111,7 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
             roomNamePane.setMaxWidth(roomNameWidth);
             roomNamePane.setAlignment(Pos.BASELINE_LEFT);
             roomNameText = new Text();
+            roomNameText.setFill(Color.valueOf("#9C9C9C"));
             roomNameText.setFont(headerFont);
             roomNamePane.getChildren().add(roomNameText);
 
@@ -122,6 +123,7 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
             ownerPane.setAlignment(Pos.BASELINE_CENTER);
             ownerText = new Text();
             ownerText.setFont(headerFont);
+            ownerText.setFill(Color.valueOf("#9C9C9C"));
             ownerPane.getChildren().add(ownerText);
 
             hBox.getChildren().add(ownerPane);
@@ -131,6 +133,7 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
             playersCountPane.setMaxWidth(playerCountWidth);
             playersCountPane.setAlignment(Pos.BASELINE_CENTER);
             playersCountText = new Text();
+            playersCountText.setFill(Color.valueOf("#9C9C9C"));
             playersCountText.setFont(headerFont);
             playersCountPane.getChildren().add(playersCountText);
 
@@ -242,53 +245,79 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
 
     public void shiftViewedList(int shift) {
         if (shift > 0) {
-            if (shift < lines.size() - lastLineView) {
-                list
-                        .getChildren()
-                        .remove(1, shift + 1);
+            if (shift <= maxLineToView) {
+                if (shift < lines.size() - lastLineView) {
+                    list
+                            .getChildren()
+                            .remove(1, shift + 1);
 
-                List<RoomLine> addLines = lines.subList(
-                        lastLineView + 1,
-                        lastLineView + shift + 1
-                );
 
-                list
-                        .getChildren()
-                        .addAll(addLines);
+                    List<RoomLine> addLines = lines.subList(
+                            lastLineView + 1,
+                            lastLineView + shift + 1
+                    );
 
-                addLines.forEach(this::animateLine);
+                    list
+                            .getChildren()
+                            .addAll(addLines);
 
-                firstLineView += shift;
-                lastLineView += shift;
+                    addLines.forEach(this::animateLine);
+
+                    firstLineView += shift;
+                    lastLineView += shift;
+                } else {
+                    list
+                            .getChildren()
+                            .remove(1, lines.size() - maxLineToView);
+
+                    List<RoomLine> addLines = lines.subList(
+                            lines.size() - maxLineToView,
+                            lines.size()
+                    );
+
+                    list
+                            .getChildren()
+                            .addAll(addLines);
+
+                    addLines.forEach(this::animateLine);
+
+                    firstLineView = lines.size() - maxLineToView;
+                }
             } else {
-                list
-                        .getChildren()
-                        .remove(1, lines.size() - lastLineView);
+                if (shift < lines.size() - lastLineView) {
+                    list.getChildren().clear();
+                    list.getChildren().add(headerPane);
 
-                List<RoomLine> addLines = lines.subList(
-                        lastLineView + 1,
-                        lines.size()
-                );
+                    List<RoomLine> addLines = lines.subList(firstLineView + shift,
+                            firstLineView + shift + maxLineToView + 1);
 
-                list
-                        .getChildren()
-                        .addAll(addLines);
+                    list.getChildren().addAll(addLines);
 
-                addLines.forEach(this::animateLine);
+                    addLines.forEach(this::animateLine);
 
-                firstLineView = lines.size() - maxLineToView;
-                lastLineView = lines.size() - 1;
+                    firstLineView += shift;
+                } else {
+                    list.getChildren().clear();
+                    list.getChildren().add(headerPane);
+
+                    List<RoomLine> addLines = lines.subList(lines.size() - maxLineToView,
+                            lines.size());
+
+                    list.getChildren().addAll(addLines);
+
+                    firstLineView += lines.size() - maxLineToView;
+                }
             }
         } else if (shift < 0) {
-            if (shift > -firstLineView){
+            if (shift > -firstLineView) {
                 list
                         .getChildren()
-                        .remove(maxLineToView+shift+1,
-                                maxLineToView+1);
+                        .remove(maxLineToView + shift + 1,
+                                maxLineToView + 1);
 
-                List<RoomLine> addLines = lines.subList(firstLineView + shift-1, firstLineView-1);
+                List<RoomLine> addLines = lines.subList(firstLineView + shift - 1, firstLineView - 1);
 
-                list.getChildren().addAll(1,addLines);
+                list.getChildren().addAll(1, addLines);
 
                 addLines.forEach(this::animateLine);
 
@@ -369,5 +398,4 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
     public int getMaxLineToView() {
         return maxLineToView;
     }
-
 }

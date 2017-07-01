@@ -27,7 +27,7 @@ public class Test extends Application {
         AnimatedCartoonRoomsList animatedCartoonList = new AnimatedCartoonRoomsList(cartoonComponentGroup,500,100,900,500);
 
         List<AnimatedCartoonRoomsList.RoomLine> list = new LinkedList<>();
-        for (int i = 0 ; i!= 400 ;i++) {
+        for (int i = 0 ; i!= 222 ;i++) {
             AnimatedCartoonRoomsList.RoomLine roomLine1 = animatedCartoonList.new RoomLine();
             roomLine1.setOwner("bb116");
             roomLine1.setRoomName("Tutsdassssaj graj"+(i+1));

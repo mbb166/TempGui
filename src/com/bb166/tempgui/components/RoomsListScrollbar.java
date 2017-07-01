@@ -35,12 +35,12 @@ public class RoomsListScrollbar extends AbstractAnimatedCartoonComponent {
                 double l = event.getSceneY() - super.getY();
 
                 if (lastPosition != 0) {
-                    if (l - lastPosition > 0 && l - lastPosition > hiddenLinesCount / 2 - scroll.getTranslateY()) {
-                        scroll.setTranslateY(hiddenLinesCount / 2);
-                    } else if (l - lastPosition < 0 && lastPosition - l > hiddenLinesCount / 2 + scroll.getTranslateY())
+                    if (l - lastPosition > 0 && l - lastPosition > hiddenLinesCount / 2d - scroll.getTranslateY()) {
+                        scroll.setTranslateY(hiddenLinesCount / 2d);
+                    } else if (l - lastPosition < 0 && lastPosition - l > hiddenLinesCount / 2d + scroll.getTranslateY()) {
                         scroll.setTranslateY(-hiddenLinesCount / 2d);
-                    else if ((l - lastPosition > 0 && scroll.getTranslateY() < hiddenLinesCount / 2) ||
-                            (l - lastPosition < 0 && scroll.getTranslateY() > -hiddenLinesCount / 2)) {
+                    }else if ((l - lastPosition > 0 && scroll.getTranslateY() < hiddenLinesCount / 2d) ||
+                            (l - lastPosition < 0 && scroll.getTranslateY() > -hiddenLinesCount / 2d)) {
                         scroll.setTranslateY(scroll.getTranslateY() - lastPosition + l);
 
                     }
