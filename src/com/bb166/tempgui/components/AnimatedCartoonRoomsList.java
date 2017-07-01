@@ -241,6 +241,10 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
         }
     }
 
+    public void clear(){
+        list.getChildren().clear();
+        list.getChildren().add(headerPane);
+    }
 
     public void shiftViewedList(int shift) {
         if (shift > 0) {
@@ -284,11 +288,10 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
                 }
             } else {
                 if (shift < lines.size() - lastLineView) {
-                    list.getChildren().clear();
-                    list.getChildren().add(headerPane);
+                    clear();
 
                     List<RoomLine> addLines = lines.subList(firstLineView + shift,
-                            firstLineView + shift + maxLineToView + 1);
+                            lastLineView + shift);
 
                     list.getChildren().addAll(addLines);
 
@@ -297,8 +300,7 @@ public class AnimatedCartoonRoomsList extends CartoonNode {
                     firstLineView += shift;
                     lastLineView += shift;
                 } else {
-                    list.getChildren().clear();
-                    list.getChildren().add(headerPane);
+                    clear();
 
                     List<RoomLine> addLines = lines.subList(lines.size() - maxLineToView,
                             lines.size());
